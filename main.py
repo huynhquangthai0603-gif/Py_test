@@ -10,35 +10,39 @@ class Ball:
                       random.randint(0,255),
                       random.randint(0,255))
         self.radius = 20
+        self.touched = False
 
 def gravity(obj):
     obj.velocity[1] += g
 
-def bounce_wall(obj):
+def bounce_ball(obj):
+    obj.touched = False
     if obj.position[1] + obj.radius >= screen_height:
         obj.position[1] = screen_height - obj.radius
         touch_p = np.array([obj.position[0], screen_height], dtype=np.float32)
-        d = touch_p - obj.position
-        t = np.array([-d[1], d[0]], dtype=np.float32)
-        v_to_t = (np.dot(obj.velocity, t) / np.dot(t, t)) * t
-        obj.velocity = ((2 * v_to_t - obj.velocity) * 0.8)
-        if abs(obj.velocity[1]) < 1:
-            obj.position[1] = screen_height - obj.radius
-            obj.velocity[1] = 0
-    elif obj.position[0] + obj.radius >= screen_width:
+        obj.touched = True
+    #right_sceen
+    if obj.position[0] + obj.radius >= screen_width:
         obj.position[0] = screen_width - obj.radius
         touch_p = np.array([screen_width, obj.position[1]], dtype=np.float32)
-        d = touch_p - obj.position
-        t = np.array([-d[1], d[0]], dtype=np.float32)
-        v_to_t = (np.dot(obj.velocity, t) / np.dot(t, t)) * t
-        obj.velocity = ((2 * v_to_t - obj.velocity) * 0.8)
-    elif obj.position[0] - obj.radius <= 0:
+        obj.touched = True
+    #left_sceen
+    if obj.position[0] - obj.radius <= 0:
         obj.position[0] = obj.radius
         touch_p = np.array([0, obj.position[1]], dtype=np.float32)
+        obj.touched = True
+    #ball
+    for j in range(len(ball)):
+        for j in range(i+1, len(ball)):
+
+
+    if obj.touched:
         d = touch_p - obj.position
         t = np.array([-d[1], d[0]], dtype=np.float32)
         v_to_t = (np.dot(obj.velocity, t) / np.dot(t, t)) * t
         obj.velocity = ((2 * v_to_t - obj.velocity) * 0.8)
+        if abs(np.linalg.norm(obj.velocity)) < 0.7:
+            obj.velocity *= 0
 
 '''def bounce_ball(obj):
     for i in range(len(balls)):
@@ -73,7 +77,7 @@ while running:
                               np.array([random.randint(-10,10), -10.0], dtype=np.float32)))
     screen.fill((0,0,0))
     for ball in balls:
-        bounce_wall(ball)
+        bounce_ball(ball)
         gravity(ball)
         ball.position += ball.velocity
         pygame.draw.circle(screen, ball.color, ball.position.astype(int), ball.radius)
