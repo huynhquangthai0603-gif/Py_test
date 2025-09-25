@@ -65,9 +65,9 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        '''if event.type == pygame.VIDEORESIZE:
-            resize_event = event
-            #screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)'''
+        if event.type == pygame.VIDEORESIZE:
+            screen_width, screen_height = event.w, event.h
+            screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
         if event.type == pygame.MOUSEBUTTONDOWN:
             balls.append(Ball(np.array(event.pos, dtype=np.float32),
                               np.array([random.randint(-10,10), -10.0], dtype=np.float32)))
