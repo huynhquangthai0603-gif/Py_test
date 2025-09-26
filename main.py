@@ -105,10 +105,11 @@ while running:
         pygame.draw.circle(screen, ball.color, ball.position.astype(int), ball.radius)
         if is_out(ball):
             balls.remove(ball)
-            balls.append(Ball([random.randint(0,screen_width), random.randint(0,screen_height)],
-                              [random.randint(-10,10), random.randint(-10, 10)]))
-            balls.append(Ball([random.randint(0,screen_width), random.randint(0,screen_height)],
-                              [random.randint(-10, 10), random.randint(-10, 10)]))
+            if len(balls) <= 100:
+                balls.append(Ball([random.randint(0,screen_width), random.randint(0,screen_height)],
+                                  [random.randint(-10,10), random.randint(-10, 10)]))
+                balls.append(Ball([random.randint(0,screen_width), random.randint(0,screen_height)],
+                                  [random.randint(-10, 10), random.randint(-10, 10)]))
     pygame.display.flip()
     clock.tick(60)
 pygame.quit()
