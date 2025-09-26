@@ -26,7 +26,7 @@ def bounce_wall(obj):
         touch_p = np.array([obj.position[0], screen_height], dtype=np.float32)
         obj.touched = True
     #right_sceen
-    if obj.position[0] + obj.radius >= screen_width:
+    '''if obj.position[0] + obj.radius >= screen_width:
         obj.position[0] = screen_width - obj.radius
         touch_p = np.array([screen_width, obj.position[1]], dtype=np.float32)
         obj.touched = True
@@ -34,21 +34,23 @@ def bounce_wall(obj):
     if obj.position[0] - obj.radius <= 0:
         obj.position[0] = obj.radius
         touch_p = np.array([0, obj.position[1]], dtype=np.float32)
-        obj.touched = True
+        obj.touched = True'''
 
     if obj.touched:
         d = touch_p - obj.position
         t = np.array([-d[1], d[0]], dtype=np.float32)
         v_to_t = (np.dot(obj.velocity, t) / np.dot(t, t)) * t
         obj.velocity = ((2 * v_to_t - obj.velocity) * 0.8)
-        if abs(np.linalg.norm(obj.velocity)) < 0.7:
-            obj.velocity *= 0
+        if abs(obj.velocity[1]) < 1:
+            obj.velocity[1] = 0
 
 def bounce_ball(obj, balls, index):
-    #obj.touched = False
+    obj.touched = False
     for i in range(index + 1, len(balls)):
         distant_vector = obj.position - balls[i].position
         distant = np.linalg.norm(distant_vector)
+        if distant == 0:
+            distant = 0.1
         d_unit_vector = distant_vector / distant
         if distant <= obj.radius + balls[i].radius:
             #reposition
@@ -58,10 +60,14 @@ def bounce_ball(obj, balls, index):
             #bounce
             obj_to_d = np.dot(obj.velocity, d_unit_vector)
             balls_to_d = np.dot(balls[i].velocity, d_unit_vector)
-            obj.velocity += (balls_to_d - obj_to_d) * d_unit_vector
-            balls[i].velocity += (obj_to_d -balls_to_d) * d_unit_vector
-
-
+            obj.velocity += (balls_to_d - obj_to_d) * d_unit_vector * 0.8
+            balls[i].velocity += (obj_to_d -balls_to_d) * d_unit_vector * 0.8
+            if np.linalg.norm(obj.velocity)  < 1:
+                obj.velocity *= 0
+            if np.linalg.norm(balls[i].velocity) < 1:
+                balls[i].velocity *= 0
+            obj.touched = True
+            balls[i].touched = True
 
 def is_out(obj):
     if obj.position[0] > screen_width + obj.radius or obj.position[0] < -obj.radius:
@@ -93,15 +99,16 @@ while running:
     for i, ball in enumerate(balls):
         bounce_wall(ball)
         bounce_ball(ball, balls, i)
-        gravity(ball)
+        if not ball.touched:
+            gravity(ball)
         ball.position += ball.velocity
         pygame.draw.circle(screen, ball.color, ball.position.astype(int), ball.radius)
         if is_out(ball):
             balls.remove(ball)
-            #balls.append(Ball([screen_width/2, screen_height/4],
-             #                 [random.randint(-10,10), random.randint(-10, 10)]))
-            '''balls.append(Ball([screen_width / 2, screen_height / 2 - 200],
-                              [random.randint(-10, 10), random.randint(-10, 10)]))'''
+            balls.append(Ball([random.randint(0,screen_width), random.randint(0,screen_height)],
+                              [random.randint(-10,10), random.randint(-10, 10)]))
+            balls.append(Ball([random.randint(0,screen_width), random.randint(0,screen_height)],
+                              [random.randint(-10, 10), random.randint(-10, 10)]))
     pygame.display.flip()
     clock.tick(60)
 pygame.quit()
