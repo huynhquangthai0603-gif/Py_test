@@ -8,8 +8,11 @@ import random
 import pygame
 import torch
 import numpy as np
+a = np.array([4, 3], dtype=np.float32)
+b = np.array([4,0], dtype=np.float32)
+print(np.dot(a,b))
 
-# --- Device setup ---
+''''# --- Device setup ---
 if torch.backends.mps.is_available():
     device = torch.device("mps")
 elif torch.cuda.is_available():
@@ -118,4 +121,4 @@ except KeyboardInterrupt:
 finally:
     running = False
     phy_thread.join(timeout=1.0)
-    pygame.quit()
+    pygame.quit()'''
