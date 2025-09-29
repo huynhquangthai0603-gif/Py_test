@@ -76,7 +76,7 @@ def is_out(obj):
         return True
     return False
 pygame.init()
-screen_width = 800
+screen_width = 600
 screen_height = 800
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
 clock = pygame.time.Clock()
